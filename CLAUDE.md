@@ -12,8 +12,7 @@ Makeup shade data for a site. Lipstick, blush and eyeshadow shades are classifie
 - `scripts/color_rules.py`: every classification threshold (hex format, minimum chroma, excluded hue range, warm/cool hue range, lightness and chroma splits). These are provisional project rules, not validated. Do not change any threshold without the user's explicit approval. If a change is approved, change it here only.
 - `scripts/fetch_products.py`: downloads from the Makeup API. Not used: the API has returned 503 since 2026-10.
 - `data/raw/products.json`: the raw source, a copy of the Kaggle dataset "Herokuapp Makeup Products". Ignored by git. Never edit it.
-- `data/products.json`: the cleaned output for the site. Committed.
-- `week-05/`, `week-05.zip`, `.claude/`: ignored by git. Do not delete or move them.
+- `data/products.json`: the cleaned output for the site, produced by `clean_products.py`. Committed.
 
 ## Python environment
 
@@ -26,6 +25,16 @@ pip install -r requirements.txt
 ```
 
 `requirements.txt` lists `requests`, which only `fetch_products.py` uses. `clean_products.py` uses only the standard library.
+
+## Raw data
+
+The raw data is not in git. To get it:
+
+1. Sign in to Kaggle and download the dataset "Herokuapp Makeup Products", a copy of the full Makeup API product list.
+2. Save its JSON file as `data/raw/products.json`. The file is a JSON list of products with `product_type` and `product_colors` fields.
+3. The copy used for the committed `data/products.json` has sha256 `ebb0dca2095302dab9a9f8726b5e3fbdaae677afbce8f5ec72c89d2ad56b057a`. Check with `sha256sum data/raw/products.json`.
+
+Never commit `data/raw/`. `.gitignore` excludes it. The committed `data/products.json` is the cleaned result, not raw data.
 
 ## Run
 
@@ -41,3 +50,4 @@ The script exits with status 1 and writes no output if the raw file is missing o
 - Never use `git add .` or `git add -A`. Add each file by path.
 - Before committing, check `git diff --cached --name-only` and confirm that only the intended files are staged.
 - Commit only after the user has reviewed the results and approved.
+- Add or change a remote, and push, only after the user has approved. Never use `--force`.
