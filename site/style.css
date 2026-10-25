@@ -227,6 +227,21 @@ body {
   font-weight: 700;
 }
 .post-reason { margin: 6px 0 0; font-size: 0.9rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.post-actions { margin: 8px 0 0; text-align: right; }
+.delete-btn {
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.delete-btn:hover { border-color: #b3261e; color: #b3261e; }
+.delete-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.delete-btn:disabled:hover { border-color: var(--border); color: var(--muted); }
+#list-status { margin: 0 0 12px; }
 
 .site-footer {
   border-top: 1px solid var(--border);

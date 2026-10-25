@@ -53,6 +53,7 @@ const el = {
   seasonHeader: document.getElementById("season-header"),
   seasonTitle: document.getElementById("season-title"),
   resultCount: document.getElementById("result-count"),
+  listStatus: document.getElementById("list-status"),
   list: document.getElementById("post-list"),
   seasonButtons: document.querySelectorAll(".season-btn"),
 };
@@ -66,13 +67,6 @@ function showStatus(node, message, kind) {
 function hideStatus(node) {
   node.hidden = true;
   node.textContent = "";
-}
-
-function newId() {
-  if (window.crypto && typeof window.crypto.randomUUID === "function") {
-    return window.crypto.randomUUID();
-  }
-  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
 function formatDate(iso) {
@@ -105,6 +99,24 @@ function renderPost(post) {
 
   addText(li, "p", "product-name", post.product);
   addText(li, "p", "post-reason", post.reason);
+
+  if (!post.isExample) {
+    const actions = document.createElement("div");
+    actions.className = "post-actions";
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "delete-btn";
+    button.textContent = "삭제";
+    button.setAttribute("aria-label", `${post.product} 글 삭제`);
+    if (state.storageReady) {
+      button.addEventListener("click", () => handleDelete(post.id));
+    } else {
+      button.disabled = true;
+      button.title = "저장된 글을 불러오지 못해 삭제할 수 없습니다.";
+    }
+    actions.appendChild(button);
+    li.appendChild(actions);
+  }
   return li;
 }
 
@@ -116,6 +128,7 @@ function setPressed(season) {
 
 function render() {
   setPressed(state.season);
+  hideStatus(el.listStatus);
   el.list.replaceChildren();
 
   if (!state.season) {
@@ -180,7 +193,7 @@ function handleSubmit(event) {
     return;
   }
 
-  const post = { id: newId(), ...values, createdAt: new Date().toISOString() };
+  const post = { id: createPostId(), ...values, createdAt: new Date().toISOString() };
   const nextPosts = [...state.userPosts, post];
   const result = state.storageReady ? saveUserPosts(nextPosts) : { ok: false };
   state.userPosts = nextPosts;
@@ -200,6 +213,25 @@ function handleSubmit(event) {
 
   state.season = post.season;
   render();
+}
+
+function handleDelete(id) {
+  if (!state.storageReady) return;
+  if (!window.confirm("이 글을 삭제할까요?")) return;
+
+  const result = deleteUserPost(id);
+  if (result.ok) {
+    state.userPosts = result.posts;
+    render();
+    showStatus(el.listStatus, "삭제했습니다.", "ok");
+  } else if (result.notFound) {
+    state.userPosts = result.posts;
+    render();
+    showStatus(el.listStatus, "이미 삭제되었거나 찾을 수 없는 글입니다. 목록을 다시 불러왔습니다.", "error");
+  } else {
+    console.error(result.error);
+    showStatus(el.listStatus, "삭제하지 못했습니다. 브라우저에 저장하는 중 문제가 생겨 글을 그대로 두었습니다.", "error");
+  }
 }
 
 function bindControls() {
@@ -227,6 +259,11 @@ function init() {
   state.storageReady = result.ok;
   if (result.ok) {
     state.userPosts = result.posts;
+    if (result.resaveError) {
+      console.error(result.resaveError);
+      showStatus(el.storageStatus,
+        "기존 글에 구분용 id를 붙였지만 브라우저에 저장하지 못했습니다. 새로고침하면 다시 시도합니다.", "error");
+    }
   } else {
     console.error(result.error);
     showStatus(el.storageStatus,
