@@ -16,7 +16,7 @@ Makeup shade data for a site. Lipstick, blush and eyeshadow shades are classifie
 - `site/`: static pages (HTML/CSS/JS, no framework) sharing `site/style.css`.
   - `index.html`, `app.js`: reads `data/products.json` and shows shades by season.
   - `recommend.html`, `recommend.js`: user recommendation page, independent of `data/products.json`. Example posts are hard-coded in `recommend.js`, labeled "예시", and never stored.
-  - `storage.js`: load/save functions for user posts. Posts are stored only in the browser's localStorage. To change the storage method, change `storage.js` only, keeping the return shapes of `loadUserPosts()` and `saveUserPosts()`.
+  - `storage.js`: functions that create ids for user posts and load, save and delete them. Posts are stored only in the browser's localStorage. To change the storage method, change `storage.js` only, keeping the return shapes of `createPostId()`, `loadUserPosts()`, `saveUserPosts()` and `deleteUserPost()`.
 
 ## Python environment
 
