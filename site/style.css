@@ -51,6 +51,8 @@ body {
   border-bottom: 2px solid var(--accent);
 }
 
+.intro { margin: 24px 0 0; color: var(--muted); }
+
 /* 필터 */
 .controls {
   display: flex;
@@ -81,8 +83,48 @@ body {
   color: var(--accent-text);
 }
 
+/* 계절 대표 색 */
+.swatches { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
 /* 결과 */
 .message { color: var(--muted); padding: 32px 0; }
+
+.season-overview {
+  list-style: none;
+  margin: 0 0 40px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.season-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.season-card:hover,
+.season-card:focus-visible { border-color: var(--accent); }
+.season-card-name { font-weight: 700; font-size: 1.05rem; }
+.season-card-count { font-size: 0.85rem; color: var(--muted); }
+.season-card .swatches { margin-top: 4px; gap: 6px; }
+.season-card .dot { width: 20px; height: 20px; }
 .season-header {
   display: flex;
   flex-wrap: wrap;

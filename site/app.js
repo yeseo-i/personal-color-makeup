@@ -22,6 +22,9 @@ const TYPE_LABELS = {
 
 const HEX_PATTERN = /^#[0-9A-Fa-f]{6}$/;
 
+const SEASON_ORDER = ["spring_warm", "summer_cool", "autumn_warm", "winter_cool"];
+const CARD_SWATCHES = 5;
+
 const state = {
   shades: [],
   season: null,
@@ -33,6 +36,7 @@ const el = {
   seasonHeader: document.getElementById("season-header"),
   seasonTitle: document.getElementById("season-title"),
   resultCount: document.getElementById("result-count"),
+  overview: document.getElementById("season-overview"),
   list: document.getElementById("shade-list"),
   seasonButtons: document.querySelectorAll(".season-btn"),
   typeButtons: document.querySelectorAll(".type-btn"),
@@ -112,6 +116,66 @@ function renderCard({ product, shade }) {
   return li;
 }
 
+// 계절의 대표 색을 고정된 방식으로 고른다. 실제 셰이드 hex의 중복을 빼고
+// 명도(lab_l), hex 순으로 정렬한 뒤 같은 간격 위치에서 count개를 뽑는다.
+function sampleSeasonHexes(season, count) {
+  const lightnessByHex = new Map();
+  for (const { shade } of state.shades) {
+    if (shade.season !== season || !HEX_PATTERN.test(shade.hex_value)) continue;
+    const hex = shade.hex_value.toUpperCase();
+    if (!lightnessByHex.has(hex)) lightnessByHex.set(hex, shade.lab_l);
+  }
+  const sorted = [...lightnessByHex].sort((a, b) =>
+    a[1] - b[1] || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+  if (sorted.length === 0) return [];
+
+  const picks = [];
+  for (let i = 0; i < count; i++) {
+    picks.push(sorted[Math.floor(((i + 1) * (sorted.length - 1)) / (count + 1))][0]);
+  }
+  return [...new Set(picks)];
+}
+
+function makeSwatches(hexes) {
+  const wrap = document.createElement("span");
+  wrap.className = "swatches";
+  wrap.setAttribute("aria-hidden", "true");
+  for (const hex of hexes) {
+    const dot = document.createElement("span");
+    dot.className = "dot";
+    dot.style.backgroundColor = hex;
+    wrap.appendChild(dot);
+  }
+  return wrap;
+}
+
+function selectSeason(season) {
+  state.season = season;
+  render();
+}
+
+function buildOverview() {
+  const fragment = document.createDocumentFragment();
+  for (const season of SEASON_ORDER) {
+    const count = state.shades.filter(({ shade }) => shade.season === season).length;
+    const li = document.createElement("li");
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "season-card";
+    const name = document.createElement("span");
+    name.className = "season-card-name";
+    name.textContent = SEASON_LABELS[season];
+    const countText = document.createElement("span");
+    countText.className = "season-card-count";
+    countText.textContent = `셰이드 ${count.toLocaleString("ko-KR")}개`;
+    card.append(name, countText, makeSwatches(sampleSeasonHexes(season, CARD_SWATCHES)));
+    card.addEventListener("click", () => selectSeason(season));
+    li.appendChild(card);
+    fragment.appendChild(li);
+  }
+  el.overview.replaceChildren(fragment);
+}
+
 function setPressed(buttons, attr, value) {
   for (const button of buttons) {
     button.setAttribute("aria-pressed", String(button.dataset[attr] === value));
@@ -126,8 +190,10 @@ function render() {
   if (!state.season) {
     el.seasonHeader.hidden = true;
     el.message.hidden = false;
+    el.overview.hidden = false;
     return;
   }
+  el.overview.hidden = true;
 
   const matches = state.shades.filter(({ product, shade }) =>
     shade.season === state.season &&
@@ -152,10 +218,7 @@ function render() {
 
 function bindControls() {
   for (const button of el.seasonButtons) {
-    button.addEventListener("click", () => {
-      state.season = button.dataset.season;
-      render();
-    });
+    button.addEventListener("click", () => selectSeason(button.dataset.season));
   }
   for (const button of el.typeButtons) {
     button.addEventListener("click", () => {
@@ -171,6 +234,7 @@ async function init() {
     const response = await fetch(DATA_URL);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     state.shades = flatten(await response.json());
+    buildOverview();
     render();
   } catch (error) {
     console.error(error);

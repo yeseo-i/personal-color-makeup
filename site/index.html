@@ -18,6 +18,8 @@
   </header>
 
   <main class="wrap">
+    <p class="intro">퍼스널 컬러(봄 웜·여름 쿨·가을 웜·겨울 쿨)를 고르면 그 톤으로 분류된 립스틱·블러셔·아이섀도 색상을 보여 줍니다.</p>
+
     <section class="controls" aria-label="필터">
       <div class="control-group">
         <h2 class="control-label" id="season-label">계절 유형</h2>
@@ -40,7 +42,8 @@
     </section>
 
     <section id="results" aria-live="polite">
-      <p class="message" id="message">위에서 계절 유형을 고르면 해당 유형의 셰이드가 표시됩니다.</p>
+      <p class="message" id="message">위에서 계절 유형을 고르거나 아래 카드를 누르면 해당 유형의 셰이드가 표시됩니다.</p>
+      <ul id="season-overview" class="season-overview" hidden></ul>
       <div id="season-header" class="season-header" hidden>
         <h2 id="season-title"></h2>
         <p id="result-count" class="result-count"></p>
