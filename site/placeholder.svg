@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <rect width="200" height="200" fill="#f4f2ef"/>
+  <rect x="70" y="60" width="60" height="60" rx="8" fill="none" stroke="#bbb5ae" stroke-width="4"/>
+  <circle cx="88" cy="80" r="6" fill="#bbb5ae"/>
+  <path d="M74 116 L96 94 L110 106 L118 98 L128 108" fill="none" stroke="#bbb5ae" stroke-width="4"/>
+  <text x="100" y="150" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#8a847d">이미지 없음</text>
+</svg>

@@ -13,6 +13,7 @@ Makeup shade data for a site. Lipstick, blush and eyeshadow shades are classifie
 - `scripts/fetch_products.py`: downloads from the Makeup API. Not used: the API has returned 503 since 2026-10.
 - `data/raw/products.json`: the raw source, a copy of the Kaggle dataset "Herokuapp Makeup Products". Ignored by git. Never edit it.
 - `data/products.json`: the cleaned output for the site, produced by `clean_products.py`. Committed.
+- `site/`: static page (HTML/CSS/JS, no framework) that reads `data/products.json` and shows shades by season.
 
 ## Python environment
 
@@ -30,7 +31,8 @@ pip install -r requirements.txt
 
 The raw data is not in git. To get it:
 
-1. Sign in to Kaggle and download the dataset "Herokuapp Makeup Products", a copy of the full Makeup API product list.
+1. Sign in to Kaggle and download the dataset "Herokuapp Makeup Products"
+   (https://www.kaggle.com/datasets/oftomorrow/herokuapp-makeup-products), a copy of the full Makeup API product list.
 2. Save its JSON file as `data/raw/products.json`. The file is a JSON list of products with `product_type` and `product_colors` fields.
 3. The copy used for the committed `data/products.json` has sha256 `ebb0dca2095302dab9a9f8726b5e3fbdaae677afbce8f5ec72c89d2ad56b057a`. Check with `sha256sum data/raw/products.json`.
 
@@ -44,6 +46,16 @@ From the repository root:
 2. `python scripts/clean_products.py`
 
 The script exits with status 1 and writes no output if the raw file is missing or is not valid JSON. After a run, compare its statistics with the previous run. If any number changes, report the old and new values and the cause. Do not adjust code to make numbers match.
+
+## Site
+
+The page fetches `../data/products.json`, so it must be served over HTTP from the repository root. Opening `site/index.html` directly will not load the data.
+
+```sh
+python3 -m http.server 8000
+```
+
+Then open http://localhost:8000/site/. The site only reads `data/products.json`; never change classification results or data for display purposes.
 
 ## Git
 
