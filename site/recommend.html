@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>사용자 추천</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="site-title" href="index.html">퍼스널 컬러 셰이드</a>
+      <nav class="site-nav" aria-label="페이지 메뉴">
+        <a href="index.html">계절별 셰이드</a>
+        <a href="recommend.html" aria-current="page">사용자 추천</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <p class="notice">작성한 글은 이 브라우저에만 저장되며 다른 사용자와 공유되지 않습니다.</p>
+    <p id="storage-status" class="status" role="status" hidden></p>
+
+    <form id="post-form" class="post-form" novalidate>
+      <h2>추천 글 쓰기</h2>
+      <div class="form-field">
+        <label for="post-season">유형</label>
+        <select id="post-season" name="season">
+          <option value="">유형을 고르세요</option>
+          <option value="spring_warm">봄 웜</option>
+          <option value="summer_cool">여름 쿨</option>
+          <option value="autumn_warm">가을 웜</option>
+          <option value="winter_cool">겨울 쿨</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="post-nickname">닉네임</label>
+        <input id="post-nickname" name="nickname" type="text" autocomplete="off" data-counter="nickname-count">
+        <p class="char-count" id="nickname-count"></p>
+      </div>
+      <div class="form-field">
+        <label for="post-product">화장품 이름</label>
+        <input id="post-product" name="product" type="text" autocomplete="off" data-counter="product-count">
+        <p class="char-count" id="product-count"></p>
+      </div>
+      <div class="form-field">
+        <label for="post-reason">추천 이유</label>
+        <textarea id="post-reason" name="reason" data-counter="reason-count"></textarea>
+        <p class="char-count" id="reason-count"></p>
+      </div>
+      <p id="form-status" class="status" role="alert" hidden></p>
+      <button type="submit" class="submit-btn">등록</button>
+    </form>
+
+    <section class="controls" aria-label="필터">
+      <div class="control-group">
+        <h2 class="control-label" id="season-label">계절 유형</h2>
+        <div class="button-row" role="group" aria-labelledby="season-label">
+          <button type="button" class="season-btn" data-season="spring_warm" aria-pressed="false">봄 웜</button>
+          <button type="button" class="season-btn" data-season="summer_cool" aria-pressed="false">여름 쿨</button>
+          <button type="button" class="season-btn" data-season="autumn_warm" aria-pressed="false">가을 웜</button>
+          <button type="button" class="season-btn" data-season="winter_cool" aria-pressed="false">겨울 쿨</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="results" aria-live="polite">
+      <p class="message" id="message">위에서 계절 유형을 고르면 해당 유형의 추천 글이 표시됩니다.</p>
+      <div id="season-header" class="season-header" hidden>
+        <h2 id="season-title"></h2>
+        <p id="result-count" class="result-count"></p>
+      </div>
+      <ul id="post-list" class="post-list"></ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>"예시" 표시가 있는 글은 페이지 구성을 보여 주기 위한 예시이며 실제 사용자 후기가 아닙니다.</p>
+      <p>분류 기준은 프로젝트용 임시 규칙이며 전문 진단이 아닙니다.</p>
+    </div>
+  </footer>
+
+  <script src="storage.js"></script>
+  <script src="recommend.js"></script>
+</body>
+</html>

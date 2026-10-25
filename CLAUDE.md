@@ -13,7 +13,10 @@ Makeup shade data for a site. Lipstick, blush and eyeshadow shades are classifie
 - `scripts/fetch_products.py`: downloads from the Makeup API. Not used: the API has returned 503 since 2026-10.
 - `data/raw/products.json`: the raw source, a copy of the Kaggle dataset "Herokuapp Makeup Products". Ignored by git. Never edit it.
 - `data/products.json`: the cleaned output for the site, produced by `clean_products.py`. Committed.
-- `site/`: static page (HTML/CSS/JS, no framework) that reads `data/products.json` and shows shades by season.
+- `site/`: static pages (HTML/CSS/JS, no framework) sharing `site/style.css`.
+  - `index.html`, `app.js`: reads `data/products.json` and shows shades by season.
+  - `recommend.html`, `recommend.js`: user recommendation page, independent of `data/products.json`. Example posts are hard-coded in `recommend.js`, labeled "예시", and never stored.
+  - `storage.js`: load/save functions for user posts. Posts are stored only in the browser's localStorage. To change the storage method, change `storage.js` only, keeping the return shapes of `loadUserPosts()` and `saveUserPosts()`.
 
 ## Python environment
 
